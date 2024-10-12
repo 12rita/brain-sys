@@ -1,14 +1,26 @@
-import {useState} from 'react'
+import {FC} from 'react'
 import './App.css'
-import {Button} from "./components/Button";
+import {
+    BrowserRouter, useRoutes,
+} from "react-router-dom";
+import {routes} from "./routes.tsx";
+import {AuthProvider, useAuth} from "./hooks";
 
+const Routes: FC = () => {
+    const {isConnected} = useAuth();
+    const authRoutes = isConnected ? routes : routes.filter(route => route.path !== '/main');
+    return useRoutes(authRoutes)
+}
 
 function App() {
-    const [count, setCount] = useState(0)
+
     return (
         <>
-            <Button onClick={() => {
-            }} title={'Я участник'}/>
+            <AuthProvider>
+                <BrowserRouter>
+                    <Routes/>
+                </BrowserRouter>
+            </AuthProvider>
         </>
     )
 }
