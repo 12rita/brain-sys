@@ -1,0 +1,4 @@
+@import './vars.css';
+.button {
+    background-color: var(--red) ;
+}
