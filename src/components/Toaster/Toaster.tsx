@@ -12,9 +12,9 @@ export const Toaster: FC = () => {
 
 
     return (
-        <div className={`${styles.wrapper} ${styles[title]}` } >
-            {title}
-            {text}
+        <div className={`${styles.wrapper} ${styles[title]}`}>
+            <div>{title.toUpperCase()}</div>
+            <div>{text}</div>
         </div>
     )
 }

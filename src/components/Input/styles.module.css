@@ -1,0 +1,4 @@
+.error {
+    border: 3px solid var(--error);
+}
+
