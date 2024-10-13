@@ -26,13 +26,13 @@ export const Connect = () => {
 
     const disabled = !ip || !name || !isIpValid || readyState === ReadyState.CONNECTING;
 
-    // const connectionStatus = {
-    //     [ReadyState.CONNECTING]: 'Connecting',
-    //     [ReadyState.OPEN]: 'Open',
-    //     [ReadyState.CLOSING]: 'Closing',
-    //     [ReadyState.CLOSED]: 'Closed',
-    //     [ReadyState.UNINSTANTIATED]: 'Uninstantiated',
-    // }[readyState];
+    const connectionStatus = {
+        [ReadyState.CONNECTING]: 'Connecting',
+        [ReadyState.OPEN]: 'Open',
+        [ReadyState.CLOSING]: 'Closing',
+        [ReadyState.CLOSED]: 'Closed',
+        [ReadyState.UNINSTANTIATED]: 'Uninstantiated',
+    }[readyState];
 
     useEffect(() => {
         if (readyState === ReadyState.OPEN) {
@@ -53,6 +53,8 @@ export const Connect = () => {
         sendMessage(name);
         console.debug(readyState)
     }
+
+    console.log(connectionStatus)
 
 
     return (<form>
