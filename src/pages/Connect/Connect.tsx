@@ -11,7 +11,7 @@ export const Connect = () => {
     const {setConnected} = useAuth();
     const {setMessage} = useToaster();
     const navigate = useNavigate();
-    const socketUrl = 'ws://localhost:9000';
+    const socketUrl = 'ws://localhost:1000';
 
     const {sendMessage, readyState} = useWebSocket(socketUrl);
 
@@ -29,8 +29,8 @@ export const Connect = () => {
         if (readyState === ReadyState.OPEN) {
             setMessage({title: 'success'});
             setConnected(true);
-            // navigate('/main')
-        } else if (readyState === ReadyState.UNINSTANTIATED) {
+            navigate('/main')
+        } else if (readyState === ReadyState.UNINSTANTIATED || readyState === ReadyState.CLOSED) {
             setMessage({title: 'error'});
         }
 
@@ -38,7 +38,7 @@ export const Connect = () => {
 
     const connect = () => {
         sendMessage(name);
-        console.log(readyState)
+        console.debug(readyState)
     }
 
 
