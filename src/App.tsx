@@ -4,7 +4,7 @@ import {
     BrowserRouter, useRoutes,
 } from "react-router-dom";
 import {routes} from "./routes.tsx";
-import {AuthProvider, useAuth} from "./hooks";
+import {AuthProvider, ToasterProvider, useAuth} from "./hooks";
 
 const Routes: FC = () => {
     const {isConnected} = useAuth();
@@ -18,7 +18,9 @@ function App() {
         <>
             <AuthProvider>
                 <BrowserRouter>
-                    <Routes/>
+                    <ToasterProvider>
+                        <Routes/>
+                    </ToasterProvider>
                 </BrowserRouter>
             </AuthProvider>
         </>

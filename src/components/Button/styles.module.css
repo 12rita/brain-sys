@@ -1,0 +1,11 @@
+
+.disabled {
+    background-color: gray;
+    cursor: default;
+}
+
+.disabled:hover {
+    background-color: gray;
+}
+
+

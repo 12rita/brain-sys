@@ -1,0 +1,19 @@
+
+.wrapper {
+    position: absolute;
+    top: 16px;
+    right: 16px;
+    opacity: 1;
+    transition: opacity 2s;
+    color: var(--lighter);
+    padding: 8px;
+    border-radius: 8px;
+}
+.error {
+    background-color: var(--error);
+}
+
+.success {
+    background-color: var(--success);
+}
+

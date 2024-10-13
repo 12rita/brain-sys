@@ -1,19 +1,19 @@
-import {ChangeEvent, FC, useCallback} from 'react'
+import {ChangeEvent, FC, InputHTMLAttributes, useCallback} from 'react'
 
-interface IInput {
+interface IInput extends InputHTMLAttributes<HTMLInputElement>{
     value: string
-    onChange: (value: string) => void
+    onChangeInput: (value: string) => void
     className?: string;
 }
 
-export const Input: FC<IInput> = ({value, onChange, className}) => {
+export const Input: FC<IInput> = ({value, onChangeInput, className, ...otherProps}) => {
 
-    const onChangeInput = useCallback((e: ChangeEvent<HTMLInputElement>) => {
-        onChange(e.target?.value)
-    }, [onChange]);
+    const handleChange = useCallback((e: ChangeEvent<HTMLInputElement>) => {
+        onChangeInput(e.target?.value)
+    }, [onChangeInput]);
 
     return (
-        <input className={className} value={value} onChange={onChangeInput}/>
+        <input className={className} value={value} onChange={handleChange} {...otherProps} />
     )
 }
 

@@ -17,7 +17,9 @@
   --dark: #300c02;
   --accent: #f19637;
   --bright: #c84b1e;
-  --text: #332d1e
+  --text: #332d1e;
+  --error: #9f1616;
+  --success: #174a17
 }
 
 

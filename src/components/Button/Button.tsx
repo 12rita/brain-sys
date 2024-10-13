@@ -1,17 +1,24 @@
-import {FC} from 'react'
+import {FC, useCallback} from 'react'
+import styles from './styles.module.css';
 
 interface IButton {
-    onClick: ()=>void;
+    onClick: () => void;
     title: string;
-    className?:string;
+    className?: string;
+    disabled?: boolean;
 }
 
-export const Button:FC<IButton> = ({onClick, title, className}) => {
+export const Button: FC<IButton> = ({onClick, title, className, disabled = false}) => {
 
-  return (
-    <button className={className} onClick={onClick}>
-        {title}
-    </button>
-  )
+    const handleClick = useCallback(() => {
+        if (disabled) return;
+        onClick()
+    }, [disabled, onClick])
+
+    return (
+        <button className={`${className} ${disabled ? styles.disabled : ''}`} onClick={handleClick}>
+            {title}
+        </button>
+    )
 }
 
