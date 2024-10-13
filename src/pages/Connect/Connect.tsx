@@ -14,7 +14,7 @@ export const Connect = () => {
     const {setConnected} = useAuth();
     const {setMessage} = useToaster();
     const navigate = useNavigate();
-    const socketUrl = `ws://${ip}`;
+    const socketUrl = `wss://${ip}`;
 
 
     const {sendMessage, readyState} = useWebSocket(socketUrl, {share: true}, openConnection);
