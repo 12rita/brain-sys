@@ -17,7 +17,7 @@ export const Connect = () => {
     // const socketUrl = `wss://0351i1-46-242-15-106.ru.tuna.am`;
 
 
-    const {sendMessage, readyState} = useWebSocket('wss' + ip, {share: true, onError:(e)=>{
+    const {sendMessage, readyState} = useWebSocket('wss://' + ip, {share: true, onError:(e)=>{
         console.log({e})
         }}, openConnection);
 
@@ -63,7 +63,7 @@ export const Connect = () => {
         <div className={styles.label}>Введите IP</div>
         <Input className={styles.input} type='text' inputMode={"numeric"} value={ip}
                onChangeInput={setIp}
-               placeholder={'Введите IP'}/>
+               placeholder={'Введите URL'}/>
         <div className={styles.label}>Введите имя</div>
         <Input className={styles.input} value={name} onChangeInput={setName} placeholder={'Введите ваше имя'}/>
         <Button type='submit' disabled={disabled} className={styles.button} onClickButton={connect}
