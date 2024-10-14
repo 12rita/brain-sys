@@ -14,10 +14,12 @@ export const Connect = () => {
     const {setConnected} = useAuth();
     const {setMessage} = useToaster();
     const navigate = useNavigate();
-    const socketUrl = `wss://${ip}`;
+    const socketUrl = `wss://${ip}:9000`;
 
 
-    const {sendMessage, readyState} = useWebSocket(socketUrl, {share: true}, openConnection);
+    const {sendMessage, readyState} = useWebSocket(socketUrl, {share: true, onError:(e)=>{
+        console.log({e})
+        }}, openConnection);
 
     const isIpValid = useMemo(() => {
         const regexp = new RegExp(ipRegex);
@@ -39,22 +41,22 @@ export const Connect = () => {
             setMessage({title: 'success'});
             setConnected(true);
             navigate('/main')
-        } else if (readyState === ReadyState.UNINSTANTIATED || readyState === ReadyState.CLOSED) {
+        } else if ((readyState === ReadyState.CLOSED) && ip) {
             setMessage({title: 'error', text: 'Connecting problems'});
             setOpenConnection(false);
         }
 
-    }, [navigate, readyState, setConnected, setMessage])
+    }, [ip, navigate, readyState, setConnected, setMessage])
 
     const connect = (e: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
         e.preventDefault();
 
         setOpenConnection(true);
-        sendMessage(name);
-        console.debug(readyState)
+        sendMessage(JSON.stringify({name}));
+        console.debug(connectionStatus)
     }
 
-    console.log(connectionStatus)
+
 
 
     return (<form>
