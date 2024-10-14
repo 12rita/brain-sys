@@ -1,28 +1,24 @@
-import {FC} from 'react'
 import './App.css'
-import {
-    BrowserRouter, useRoutes,
-} from "react-router-dom";
-import {routes} from "./routes.tsx";
-import {AuthProvider, ToasterProvider, useAuth} from "./hooks";
+import {BrowserRouter, Route, Routes} from "react-router-dom";
+import {ToasterProvider, WebSocketProvider} from "./hooks";
+import {Connect, Main} from "./pages";
+import {ERoutes} from "./routes.ts";
 
-const Routes: FC = () => {
-    const {isConnected} = useAuth();
-    const authRoutes = isConnected ? routes : routes.filter(route => route.path !== '/main');
-    return useRoutes(authRoutes)
-}
 
 function App() {
 
     return (
         <>
-            <AuthProvider>
+            <WebSocketProvider>
                 <BrowserRouter>
                     <ToasterProvider>
-                        <Routes/>
+                        <Routes>
+                            <Route path={ERoutes.CONNECT} element={<Connect/>}/>
+                            <Route path={ERoutes.MAIN} element={<Main/>}/>
+                        </Routes>
                     </ToasterProvider>
                 </BrowserRouter>
-            </AuthProvider>
+            </WebSocketProvider>
         </>
     )
 }

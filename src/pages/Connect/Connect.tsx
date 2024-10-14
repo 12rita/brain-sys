@@ -1,68 +1,51 @@
 import {Button, Input} from "../../components";
-import {useAuth, useToaster} from "../../hooks";
+import {useToaster, useWebSocketContext} from "../../hooks";
 import React, {useEffect, useState} from "react";
 import styles from './styles.module.css'
 import {useNavigate} from "react-router-dom";
-import useWebSocket, {ReadyState} from "react-use-websocket";
+import {ReadyState} from "react-use-websocket";
+import {ERoutes} from "../../routes.ts";
 
-// const ipRegex = '\\d{1,3}\\.\\d{1,3}\\.\\d{1,3}\\.\\d{1,3}'
 
 export const Connect = () => {
-    const [ip, setIp] = useState("");
-    const [name, setName] = useState("");
-    const [openConnection, setOpenConnection] = useState(false);
-    const {setConnected} = useAuth();
-    const {setMessage} = useToaster();
     const navigate = useNavigate();
-    // const socketUrl = `wss://0351i1-46-242-15-106.ru.tuna.am`;
+    const {isConnected, setUrl, sendMessage, readyState} = useWebSocketContext();
+
+    useEffect(() => {
+        if (isConnected) navigate(ERoutes.MAIN)
+    }, [isConnected, navigate]);
+
+    const [urlValue, setUrlValue] = useState("");
+    const [name, setName] = useState("");
+
+    const {setMessage} = useToaster();
 
 
-    const {sendMessage, readyState} = useWebSocket('wss://' + ip, {share: true, onError:(e)=>{
-        console.log({e})
-        }}, openConnection);
+    const disabled = !urlValue || !name || readyState === ReadyState.CONNECTING;
 
-    // const isIpValid = useMemo(() => {
-    //     const regexp = new RegExp(ipRegex);
-    //     return regexp.test(ip);
-    // }, [ip]);
-
-    const disabled = !ip || !name || readyState === ReadyState.CONNECTING;
-
-    const connectionStatus = {
-        [ReadyState.CONNECTING]: 'Connecting',
-        [ReadyState.OPEN]: 'Open',
-        [ReadyState.CLOSING]: 'Closing',
-        [ReadyState.CLOSED]: 'Closed',
-        [ReadyState.UNINSTANTIATED]: 'Uninstantiated',
-    }[readyState];
 
     useEffect(() => {
         if (readyState === ReadyState.OPEN) {
             setMessage({title: 'success'});
-            setConnected(true);
             navigate('/main')
-        } else if ((readyState === ReadyState.CLOSED) && ip) {
+        } else if ((readyState === ReadyState.CLOSED) && urlValue) {
             setMessage({title: 'error', text: 'Connecting problems'});
-            setOpenConnection(false);
+            setUrl('');
         }
 
-    }, [ip, navigate, readyState, setConnected, setMessage])
+    }, [urlValue, navigate, readyState, setMessage, setUrl])
 
     const connect = (e: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
         e.preventDefault();
-
-        setOpenConnection(true);
+        setUrl(urlValue);
         sendMessage(JSON.stringify({name}));
-        console.debug(connectionStatus)
     }
 
 
-
-
     return (<form>
-        <div className={styles.label}>Введите IP</div>
-        <Input className={styles.input} type='text' inputMode={"numeric"} value={ip}
-               onChangeInput={setIp}
+        <div className={styles.label}>Введите URL</div>
+        <Input className={styles.input} type='text' inputMode={"numeric"} value={urlValue}
+               onChangeInput={setUrlValue}
                placeholder={'Введите URL'}/>
         <div className={styles.label}>Введите имя</div>
         <Input className={styles.input} value={name} onChangeInput={setName} placeholder={'Введите ваше имя'}/>
