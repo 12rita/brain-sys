@@ -1,11 +1,11 @@
 import {Button, Input} from "../../components";
 import {useAuth, useToaster} from "../../hooks";
-import React, {useEffect, useMemo, useState} from "react";
+import React, {useEffect, useState} from "react";
 import styles from './styles.module.css'
 import {useNavigate} from "react-router-dom";
 import useWebSocket, {ReadyState} from "react-use-websocket";
 
-const ipRegex = '\\d{1,3}\\.\\d{1,3}\\.\\d{1,3}\\.\\d{1,3}'
+// const ipRegex = '\\d{1,3}\\.\\d{1,3}\\.\\d{1,3}\\.\\d{1,3}'
 
 export const Connect = () => {
     const [ip, setIp] = useState("");
@@ -14,19 +14,19 @@ export const Connect = () => {
     const {setConnected} = useAuth();
     const {setMessage} = useToaster();
     const navigate = useNavigate();
-    const socketUrl = `ws://${ip}:9000`;
+    // const socketUrl = `wss://0351i1-46-242-15-106.ru.tuna.am`;
 
 
-    const {sendMessage, readyState} = useWebSocket(socketUrl, {share: true, onError:(e)=>{
+    const {sendMessage, readyState} = useWebSocket('wss' + ip, {share: true, onError:(e)=>{
         console.log({e})
         }}, openConnection);
 
-    const isIpValid = useMemo(() => {
-        const regexp = new RegExp(ipRegex);
-        return regexp.test(ip);
-    }, [ip]);
+    // const isIpValid = useMemo(() => {
+    //     const regexp = new RegExp(ipRegex);
+    //     return regexp.test(ip);
+    // }, [ip]);
 
-    const disabled = !ip || !name || !isIpValid || readyState === ReadyState.CONNECTING;
+    const disabled = !ip || !name || readyState === ReadyState.CONNECTING;
 
     const connectionStatus = {
         [ReadyState.CONNECTING]: 'Connecting',
@@ -61,7 +61,7 @@ export const Connect = () => {
 
     return (<form>
         <div className={styles.label}>Введите IP</div>
-        <Input className={styles.input} type='text' inputMode={"numeric"} value={ip} pattern={ipRegex}
+        <Input className={styles.input} type='text' inputMode={"numeric"} value={ip}
                onChangeInput={setIp}
                placeholder={'Введите IP'}/>
         <div className={styles.label}>Введите имя</div>
