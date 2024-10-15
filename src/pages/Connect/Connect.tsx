@@ -7,6 +7,7 @@ import { ReadyState } from 'react-use-websocket';
 import { ERoutes } from '../../routes.ts';
 import { QrReader } from '../../components/QRScanner';
 import connectionSVG from '../../assets/plug-connection.svg';
+import { prepareURL } from '../../utils';
 
 export const Connect = () => {
   const navigate = useNavigate();
@@ -41,7 +42,7 @@ export const Connect = () => {
 
   const connect = (e: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
     e.preventDefault();
-    setUrl(urlValue.trim());
+    setUrl(prepareURL(urlValue));
     sendMessage(JSON.stringify({ name }));
   };
 

@@ -18,11 +18,7 @@ export const QrReader: FC<IQrReader> = ({ setScannedResult, onClose }) => {
   // Success
   const onScanSuccess = useCallback(
     (result: QrScanner.ScanResult) => {
-      let url;
-      if (result.data.startsWith('https://')) {
-        url = result.data.slice(8) || '';
-      } else url = result?.data || '';
-      setScannedResult(url);
+      setScannedResult(result?.data || '');
       scanner.current?.stop();
       onClose && onClose();
     },

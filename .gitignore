@@ -10,9 +10,6 @@ lerna-debug.log*
 node_modules
 dist
 dist-ssr
-package-lock.json
-eslintcache
-
 *.local
 
 
@@ -26,3 +23,6 @@ eslintcache
 *.njsproj
 *.sln
 *.sw?
+eslintcache
+/.eslintcache
+/package-lock.json
