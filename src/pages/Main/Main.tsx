@@ -17,5 +17,9 @@ export const Main = () => {
     sendMessage(JSON.stringify({ date: Date.now() }));
   }, [sendMessage]);
 
-  return <Button onClickButton={sendAnswer} className={styles.button} title={'Я знаю ответ!'} />;
+  return (
+    <Button onClickButton={sendAnswer} className={styles.button}>
+      {'Я знаю ответ!'}
+    </Button>
+  );
 };

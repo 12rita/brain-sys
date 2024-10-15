@@ -6,6 +6,7 @@ import { useNavigate } from 'react-router-dom';
 import { ReadyState } from 'react-use-websocket';
 import { ERoutes } from '../../routes.ts';
 import { QrReader } from '../../components/QRScanner';
+import connectionSVG from '../../assets/plug-connection.svg';
 
 export const Connect = () => {
   const navigate = useNavigate();
@@ -20,7 +21,11 @@ export const Connect = () => {
   const [isOpenQRScan, setOpenQRScan] = useState(false);
   const { setMessage } = useToaster();
   const { isMobile } = useIsMobile();
-  const scanButtonTitle = isMobile ? 'QR' : 'QR';
+  const connectButtonContent = isMobile ? (
+    <img className={styles.icon} alt={'connectIcon'} src={connectionSVG} />
+  ) : (
+    'Подключиться'
+  );
 
   const disabled = !urlValue || !name || readyState === ReadyState.CONNECTING;
 
@@ -56,7 +61,9 @@ export const Connect = () => {
           onChangeInput={setUrlValue}
           placeholder={'Введите URL'}
         />
-        <Button className={styles.button} onClickButton={toggleScanner} title={scanButtonTitle} />
+        <Button className={styles.button} onClickButton={toggleScanner}>
+          {'QR'}
+        </Button>
       </div>
       {isOpenQRScan && <QrReader setScannedResult={setUrlValue} onClose={toggleScanner} />}
 
@@ -70,9 +77,9 @@ export const Connect = () => {
       <Button
         disabled={disabled}
         className={`${styles.button} ${styles.connectButton}`}
-        onClickButton={connect}
-        title={'Подключиться'}
-      />
+        onClickButton={connect}>
+        {connectButtonContent}
+      </Button>
     </div>
   );
 };
