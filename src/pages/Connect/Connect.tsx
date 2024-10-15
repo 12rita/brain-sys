@@ -7,6 +7,7 @@ import { ReadyState } from 'react-use-websocket';
 import { ERoutes } from '../../routes.ts';
 import { QrReader } from '../../components/QRScanner';
 import connectionSVG from '../../assets/plug-connection.svg';
+import scanSVG from '../../assets/qrIcon.svg';
 import { prepareURL } from '../../utils';
 
 export const Connect = () => {
@@ -26,6 +27,12 @@ export const Connect = () => {
     <img className={styles.icon} alt={'connectIcon'} src={connectionSVG} />
   ) : (
     'Подключиться'
+  );
+
+  const scanButtonContent = isMobile ? (
+    <img width={30} height={30} alt={'scanIcon'} src={scanSVG} />
+  ) : (
+    'QR'
   );
 
   const disabled = !urlValue || !name || readyState === ReadyState.CONNECTING;
@@ -63,7 +70,7 @@ export const Connect = () => {
           placeholder={'Введите URL'}
         />
         <Button className={styles.button} onClickButton={toggleScanner}>
-          {'QR'}
+          {scanButtonContent}
         </Button>
       </div>
       {isOpenQRScan && <QrReader setScannedResult={setUrlValue} onClose={toggleScanner} />}
