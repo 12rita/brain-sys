@@ -1,0 +1,12 @@
+.tableItem {
+    display: flex;
+    gap: 8px;
+}
+
+.title {
+    margin-bottom: 16px;
+}
+
+.button {
+    margin-top: 8px;
+}

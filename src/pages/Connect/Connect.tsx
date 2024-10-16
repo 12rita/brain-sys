@@ -11,11 +11,12 @@ import { prepareURL } from '../../utils';
 
 export const Connect = () => {
   const navigate = useNavigate();
-  const { isConnected, setUrl, sendMessage, readyState } = useWebSocketContext();
+  const { isConnected, setUrl, sendMessage, readyState, isAdmin } = useWebSocketContext();
 
   useEffect(() => {
-    if (isConnected) navigate(ERoutes.MAIN);
-  }, [isConnected, navigate]);
+    if (isConnected && isAdmin) navigate(ERoutes.ADMIN);
+    else if (isConnected) navigate(ERoutes.MAIN);
+  }, [isAdmin, isConnected, navigate]);
 
   const [urlValue, setUrlValue] = useState('');
   const [name, setName] = useState('');

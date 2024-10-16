@@ -1,4 +1,5 @@
 export enum ERoutes {
-    MAIN = '/main',
-    CONNECT = '/'
+  MAIN = '/main',
+  ADMIN = '/host',
+  CONNECT = '/'
 }

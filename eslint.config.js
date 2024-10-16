@@ -29,7 +29,8 @@ export default tseslint.config(
       'react-refresh/only-export-components': ['warn', { allowConstantExport: true }],
       ...react.configs.recommended.rules,
       ...react.configs['jsx-runtime'].rules,
-      '@typescript-eslint/no-unused-expressions': 'off'
+      '@typescript-eslint/no-unused-expressions': 'off',
+      '@typescript-eslint/no-unsafe-assignment': ['warn']
     }
   }
 );
