@@ -3,7 +3,6 @@ import styles from './styles.module.css';
 import { ITable } from './types.ts';
 
 export const Table: FC<ITable> = ({ columns, rows }) => {
-  console.log(rows);
   return (
     <table className={styles.table}>
       <thead>

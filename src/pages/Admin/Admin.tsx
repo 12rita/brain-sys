@@ -1,14 +1,17 @@
 import styles from './styles.module.css';
 import { useEffect, useMemo, useState } from 'react';
-import { IResult, IUser, useWebSocketContext } from '../../hooks';
+import { IResult, IUser, useIsDarkMode, useWebSocketContext } from '../../hooks';
 import { useNavigate } from 'react-router-dom';
 import { ERoutes } from '../../routes.ts';
 import { Button } from '../../components';
 import { Table } from '../../components/Table';
+import closeLight from '../../assets/closeLight.svg';
+import closeDark from '../../assets/closeDark.svg';
 
 const userColumns = [
   { id: 'number', title: 'Номер' },
-  { id: 'name', title: 'Имя' }
+  { id: 'name', title: 'Имя' },
+  { id: 'close', title: '' }
 ];
 
 const resultColumns = [
@@ -22,6 +25,7 @@ export const Admin = () => {
   const { isConnected, isAdmin, parsedMessage, sendMessage } = useWebSocketContext();
   const [results, setResults] = useState([] as IResult[]);
   const [users, setUsers] = useState([] as IUser[]);
+  const { theme } = useIsDarkMode();
 
   useEffect(() => {
     if (!isConnected) navigate(ERoutes.CONNECT);
@@ -29,8 +33,22 @@ export const Admin = () => {
   }, [isAdmin, isConnected, navigate]);
 
   const userRows = useMemo(() => {
-    return users?.map((user, idx) => ({ ...user, number: idx + 1 }));
-  }, [users]);
+    return users?.map((user, idx) => {
+      const handleClose = () => {
+        sendMessage(JSON.stringify({ close: true, id: user.id }));
+      };
+
+      const closeIcon = (
+        <img
+          className={styles.closeIcon}
+          src={theme === 'dark' ? closeLight : closeDark}
+          alt={'close-icon'}
+          onClick={handleClose}
+        />
+      );
+      return { ...user, number: idx + 1, close: closeIcon };
+    });
+  }, [users, sendMessage]);
 
   const resultRows = useMemo(() => {
     return results.map((item, index) => {

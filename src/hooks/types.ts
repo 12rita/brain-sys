@@ -15,6 +15,7 @@ export interface IResetEvent {
 
 export interface IUser {
   name: string;
+  id: string;
 }
 
 export interface IUserData {

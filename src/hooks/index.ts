@@ -6,3 +6,4 @@ export * from './WebSocketProvider.tsx';
 export * from './useWebSocket.ts';
 export * from './useIsMobile.ts';
 export * from './types.ts';
+export * from './useIsDarkMode.ts';
