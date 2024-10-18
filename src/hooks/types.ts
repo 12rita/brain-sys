@@ -13,4 +13,12 @@ export interface IResetEvent {
   reset: boolean;
 }
 
-export type IServerResponse = IResultsData | IAdminData | IResetEvent;
+export interface IUser {
+  name: string;
+}
+
+export interface IUserData {
+  users: IUser[];
+}
+
+export type IServerResponse = IResultsData | IAdminData | IResetEvent | IUserData;

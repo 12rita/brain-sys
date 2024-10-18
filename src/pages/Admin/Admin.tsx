@@ -1,28 +1,56 @@
 import styles from './styles.module.css';
-import { useEffect, useState } from 'react';
-import { IResult, useWebSocketContext } from '../../hooks';
+import { useEffect, useMemo, useState } from 'react';
+import { IResult, IUser, useWebSocketContext } from '../../hooks';
 import { useNavigate } from 'react-router-dom';
 import { ERoutes } from '../../routes.ts';
 import { Button } from '../../components';
+import { Table } from '../../components/Table';
+
+const userColumns = [
+  { id: 'number', title: 'Номер' },
+  { id: 'name', title: 'Имя' }
+];
+
+const resultColumns = [
+  { id: 'number', title: 'Номер' },
+  { id: 'name', title: 'Имя' },
+  { id: 'time', title: 'Время' }
+];
 
 export const Admin = () => {
   const navigate = useNavigate();
   const { isConnected, isAdmin, parsedMessage, sendMessage } = useWebSocketContext();
   const [results, setResults] = useState([] as IResult[]);
+  const [users, setUsers] = useState([] as IUser[]);
 
   useEffect(() => {
     if (!isConnected) navigate(ERoutes.CONNECT);
     else if (isConnected && !isAdmin) navigate(ERoutes.MAIN);
   }, [isAdmin, isConnected, navigate]);
 
-  // const sendAnswer = useCallback(() => {
-  //   sendMessage(JSON.stringify({ date: Date.now() }));
+  const userRows = useMemo(() => {
+    return users?.map((user, idx) => ({ ...user, number: idx + 1 }));
+  }, [users]);
 
-  // }, [sendMessage]);
+  const resultRows = useMemo(() => {
+    return results.map((item, index) => {
+      const { name, date } = item;
+      const dateObj = new Date(Number(date));
+      const time = dateObj.toLocaleTimeString() + ' ' + dateObj.getMilliseconds();
+      return {
+        name,
+        time,
+        number: index + 1
+      };
+    });
+  }, [results]);
 
   useEffect(() => {
-    if (parsedMessage && 'results' in parsedMessage) {
+    if (!parsedMessage) return;
+    if ('results' in parsedMessage) {
       setResults(parsedMessage.results);
+    } else if ('users' in parsedMessage) {
+      setUsers(parsedMessage.users);
     }
   }, [parsedMessage]);
 
@@ -32,22 +60,18 @@ export const Admin = () => {
   };
 
   return (
-    <div>
-      <div className={styles.title}>Результаты:</div>
-      {results.map((item, index) => {
-        const { name, date } = item;
-        const time = new Date(Number(date)).toLocaleTimeString();
-        return (
-          <div className={styles.tableItem} key={`${item.name}+${index}`}>
-            <div>{index + 1}</div>
-            <div>{name}</div>
-            <div>{time}</div>
-          </div>
-        );
-      })}
-      <Button className={styles.button} onClickButton={handleReset}>
-        Сброс
-      </Button>
+    <div className={styles.wrapper}>
+      <div>
+        <div className={styles.title}>Кто подключился:</div>
+        <Table columns={userColumns} rows={userRows} />
+      </div>
+      <div>
+        <div className={styles.title}>Результаты:</div>
+        <Table columns={resultColumns} rows={resultRows} />
+        <Button className={styles.button} onClickButton={handleReset}>
+          Сброс
+        </Button>
+      </div>
     </div>
   );
 };

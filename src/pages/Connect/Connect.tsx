@@ -5,7 +5,7 @@ import styles from './styles.module.css';
 import { useNavigate } from 'react-router-dom';
 import { ReadyState } from 'react-use-websocket';
 import { ERoutes } from '../../routes.ts';
-import { QrReader } from '../../components/QRScanner';
+import { QrReader } from '../../components';
 import scanSVG from '../../assets/qrIcon.svg';
 import { prepareURL } from '../../utils';
 
@@ -36,11 +36,11 @@ export const Connect = () => {
     if (readyState === ReadyState.OPEN) {
       setMessage({ title: 'success' });
       navigate(ERoutes.MAIN);
-    } else if (readyState === ReadyState.CLOSED && urlValue) {
+    } else if (readyState === ReadyState.CLOSED && urlValue && !disabled) {
       setMessage({ title: 'error', text: 'Connecting problems' });
       setUrl('');
     }
-  }, [urlValue, navigate, readyState, setMessage, setUrl]);
+  }, [urlValue, navigate, readyState, setMessage, setUrl, disabled]);
 
   const connect = (e: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
     e.preventDefault();

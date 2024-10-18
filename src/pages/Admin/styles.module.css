@@ -4,9 +4,16 @@
 }
 
 .title {
+    font-weight: bold;
     margin-bottom: 16px;
 }
 
 .button {
     margin-top: 8px;
 }
+
+.wrapper {
+    display: flex;
+    gap: 32px
+}
+
