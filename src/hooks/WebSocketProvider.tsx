@@ -29,7 +29,10 @@ export const WebSocketProvider = ({ children }: { children?: ReactNode }) => {
   const { readyState, lastJsonMessage, ...otherProps } = useWebSocket(
     WS_URL,
     {
-      share: true
+      share: true,
+      onClose: () => {
+        setOpenConnection(false);
+      }
     },
     openConnection
   );
