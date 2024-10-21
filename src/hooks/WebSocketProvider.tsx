@@ -5,16 +5,17 @@ import {
   SetStateAction,
   useEffect,
   useMemo,
+  useRef,
   useState
 } from 'react';
-import useWebSocket, { ReadyState, SendMessage } from 'react-use-websocket';
-import { IServerResponse } from './types.ts';
+import useWebSocket, { ReadyState } from 'react-use-websocket';
+import { IAdminData, IServerResponse } from './types.ts';
 import { WS_URL } from './const.ts';
+import { WebSocketHook } from 'react-use-websocket/dist/lib/types';
 
-interface IWebSocketContext {
+interface IWebSocketContext extends Partial<WebSocketHook<unknown>> {
   isConnected: boolean;
   setOpenConnection: Dispatch<SetStateAction<boolean>>;
-  sendMessage: SendMessage;
   readyState: ReadyState;
   isAdmin: boolean;
   parsedMessage: IServerResponse | null;
@@ -25,8 +26,8 @@ export const WebSocketContext = createContext({} as IWebSocketContext);
 export const WebSocketProvider = ({ children }: { children?: ReactNode }) => {
   const [openConnection, setOpenConnection] = useState(false);
   const [isAdmin, setIsAdmin] = useState(false);
-
-  const { sendMessage, readyState, lastMessage } = useWebSocket(
+  const didUnmount = useRef(false);
+  const { readyState, lastJsonMessage, ...otherProps } = useWebSocket(
     WS_URL,
     {
       share: true
@@ -34,35 +35,41 @@ export const WebSocketProvider = ({ children }: { children?: ReactNode }) => {
     openConnection
   );
 
-  const parsedMessage = useMemo(() => {
-    if (!lastMessage) return null;
-    let parsed: IServerResponse;
-    try {
-      parsed = JSON.parse(lastMessage.data as string) as IServerResponse;
-    } catch (e) {
-      console.error(e);
-      return null;
-    }
-    return parsed;
-  }, [lastMessage]);
+  useEffect(() => {
+    return () => {
+      didUnmount.current = true;
+    };
+  }, []);
+
+  // const parsedMessage = useMemo(() => {
+  //   if (!lastMessage) return null;
+  //   let parsed: IServerResponse;
+  //   try {
+  //     parsed = JSON.parse(lastMessage.data as string) as IServerResponse;
+  //   } catch (e) {
+  //     console.error(e);
+  //     return null;
+  //   }
+  //   return parsed;
+  // }, [lastMessage]);
 
   const isConnected = useMemo(() => readyState === ReadyState.OPEN, [readyState]);
   console.log({ readyState, ReadyState });
   useEffect(() => {
-    if (!parsedMessage || !('isAdminRole' in parsedMessage)) {
+    if (!lastJsonMessage || !('isAdminRole' in (lastJsonMessage as IServerResponse))) {
       return;
-    } else setIsAdmin(parsedMessage.isAdminRole);
-  }, [parsedMessage]);
+    } else setIsAdmin((lastJsonMessage as IAdminData).isAdminRole);
+  }, [lastJsonMessage]);
 
   return (
     <WebSocketContext.Provider
       value={{
         setOpenConnection,
-        sendMessage,
         readyState,
         isConnected,
         isAdmin,
-        parsedMessage
+        parsedMessage: lastJsonMessage as IServerResponse,
+        ...otherProps
       }}>
       {children}
     </WebSocketContext.Provider>

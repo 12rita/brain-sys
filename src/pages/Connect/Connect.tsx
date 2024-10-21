@@ -9,7 +9,7 @@ import { ERoutes } from '../../routes.ts';
 export const Connect = () => {
   const navigate = useNavigate();
 
-  const { isConnected, sendMessage, readyState, isAdmin, setOpenConnection } =
+  const { isConnected, sendJsonMessage, readyState, isAdmin, setOpenConnection } =
     useWebSocketContext();
 
   useEffect(() => {
@@ -24,13 +24,13 @@ export const Connect = () => {
 
   useEffect(() => {
     if (readyState === ReadyState.OPEN) {
-      sendMessage(JSON.stringify({ name }));
+      sendJsonMessage && sendJsonMessage({ name });
       setMessage({ title: 'success' });
       navigate(ERoutes.MAIN);
     } else if (readyState === ReadyState.CLOSED && !disabled) {
       setMessage({ title: 'error', text: 'Connecting problems' });
     }
-  }, [name, sendMessage, navigate, readyState, setMessage, disabled]);
+  }, [name, navigate, readyState, setMessage, disabled, sendJsonMessage]);
 
   const connect = (e: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
     e.preventDefault();

@@ -7,7 +7,7 @@ import { Button } from '../../components';
 
 export const Main = () => {
   const navigate = useNavigate();
-  const { isConnected, sendMessage, isAdmin, parsedMessage } = useWebSocketContext();
+  const { isConnected, sendJsonMessage, isAdmin, parsedMessage } = useWebSocketContext();
 
   useEffect(() => {
     if (!isConnected) navigate(ERoutes.CONNECT);
@@ -17,9 +17,9 @@ export const Main = () => {
   const [disabled, setDisabled] = useState(false);
 
   const sendAnswer = useCallback(() => {
-    sendMessage(JSON.stringify({ date: Date.now() }));
+    sendJsonMessage && sendJsonMessage({ date: Date.now() });
     setDisabled(true);
-  }, [sendMessage]);
+  }, [sendJsonMessage]);
 
   useEffect(() => {
     if (parsedMessage && 'reset' in parsedMessage) {
