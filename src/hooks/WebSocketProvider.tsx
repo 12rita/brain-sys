@@ -9,10 +9,11 @@ import {
 } from 'react';
 import useWebSocket, { ReadyState, SendMessage } from 'react-use-websocket';
 import { IServerResponse } from './types.ts';
+import { WS_URL } from './const.ts';
 
 interface IWebSocketContext {
   isConnected: boolean;
-  setUrl: Dispatch<SetStateAction<string>>;
+  setOpenConnection: Dispatch<SetStateAction<boolean>>;
   sendMessage: SendMessage;
   readyState: ReadyState;
   isAdmin: boolean;
@@ -22,15 +23,15 @@ interface IWebSocketContext {
 export const WebSocketContext = createContext({} as IWebSocketContext);
 
 export const WebSocketProvider = ({ children }: { children?: ReactNode }) => {
-  const [url, setUrl] = useState('');
+  const [openConnection, setOpenConnection] = useState(false);
   const [isAdmin, setIsAdmin] = useState(false);
 
   const { sendMessage, readyState, lastMessage } = useWebSocket(
-    `wss://${url}`,
+    WS_URL,
     {
       share: true
     },
-    !!url
+    openConnection
   );
 
   const parsedMessage = useMemo(() => {
@@ -56,7 +57,7 @@ export const WebSocketProvider = ({ children }: { children?: ReactNode }) => {
   return (
     <WebSocketContext.Provider
       value={{
-        setUrl,
+        setOpenConnection,
         sendMessage,
         readyState,
         isConnected,
