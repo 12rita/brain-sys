@@ -17,7 +17,9 @@ const userColumns = [
 const resultColumns = [
   { id: 'number', title: 'Номер' },
   { id: 'name', title: 'Имя' },
-  { id: 'time', title: 'Время' }
+  { id: 'time', title: 'Время' },
+  { id: 'serverTime', title: 'Время с сервера' },
+  { id: 'delta', title: 'Разница' }
 ];
 
 export const Admin = () => {
@@ -48,16 +50,21 @@ export const Admin = () => {
       );
       return { ...user, number: idx + 1, close: closeIcon };
     });
-  }, [users, sendMessage]);
+  }, [users, theme, sendMessage]);
 
   const resultRows = useMemo(() => {
     return results.map((item, index) => {
-      const { name, date } = item;
+      const { name, date, serverDate } = item;
       const dateObj = new Date(Number(date));
       const time = dateObj.toLocaleTimeString() + ' ' + dateObj.getMilliseconds();
+      const serverDateObj = new Date(Number(serverDate));
+      const serverTimeConverted =
+        serverDateObj.toLocaleTimeString() + ' ' + serverDateObj.getMilliseconds();
       return {
         name,
         time,
+        serverTime: serverTimeConverted,
+        delta: Number(serverDate) - Number(date),
         number: index + 1
       };
     });

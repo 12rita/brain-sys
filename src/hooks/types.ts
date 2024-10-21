@@ -1,6 +1,7 @@
 export interface IResult {
   name: string;
   date: string;
+  serverDate: string;
 }
 
 export interface IResultsData {

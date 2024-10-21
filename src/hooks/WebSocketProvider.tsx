@@ -47,7 +47,7 @@ export const WebSocketProvider = ({ children }: { children?: ReactNode }) => {
   }, [lastMessage]);
 
   const isConnected = useMemo(() => readyState === ReadyState.OPEN, [readyState]);
-
+  console.log({ readyState, ReadyState });
   useEffect(() => {
     if (!parsedMessage || !('isAdminRole' in parsedMessage)) {
       return;
