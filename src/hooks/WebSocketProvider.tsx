@@ -5,7 +5,6 @@ import {
   SetStateAction,
   useEffect,
   useMemo,
-  useRef,
   useState
 } from 'react';
 import useWebSocket, { ReadyState } from 'react-use-websocket';
@@ -26,7 +25,7 @@ export const WebSocketContext = createContext({} as IWebSocketContext);
 export const WebSocketProvider = ({ children }: { children?: ReactNode }) => {
   const [openConnection, setOpenConnection] = useState(false);
   const [isAdmin, setIsAdmin] = useState(false);
-  const didUnmount = useRef(false);
+
   const { readyState, lastJsonMessage, ...otherProps } = useWebSocket(
     WS_URL,
     {
@@ -35,26 +34,8 @@ export const WebSocketProvider = ({ children }: { children?: ReactNode }) => {
     openConnection
   );
 
-  useEffect(() => {
-    return () => {
-      didUnmount.current = true;
-    };
-  }, []);
-
-  // const parsedMessage = useMemo(() => {
-  //   if (!lastMessage) return null;
-  //   let parsed: IServerResponse;
-  //   try {
-  //     parsed = JSON.parse(lastMessage.data as string) as IServerResponse;
-  //   } catch (e) {
-  //     console.error(e);
-  //     return null;
-  //   }
-  //   return parsed;
-  // }, [lastMessage]);
-
   const isConnected = useMemo(() => readyState === ReadyState.OPEN, [readyState]);
-  console.log({ readyState, ReadyState });
+  // console.log({ readyState, ReadyState });
   useEffect(() => {
     if (!lastJsonMessage || !('isAdminRole' in (lastJsonMessage as IServerResponse))) {
       return;

@@ -1,21 +1,15 @@
 import styles from './styles.module.css';
 import { useCallback, useEffect, useState } from 'react';
-import { useWebSocketContext } from '../../hooks';
-import { useNavigate } from 'react-router-dom';
+import { useNoReturn, useWebSocketContext } from '../../hooks';
+import { Navigate } from 'react-router-dom';
 import { ERoutes } from '../../routes.ts';
 import { Button } from '../../components';
 
 export const Main = () => {
-  const navigate = useNavigate();
   const { isConnected, sendJsonMessage, isAdmin, parsedMessage } = useWebSocketContext();
-
-  useEffect(() => {
-    if (!isConnected) navigate(ERoutes.CONNECT);
-    if (isConnected && isAdmin) navigate(ERoutes.ADMIN);
-  }, [isAdmin, isConnected, navigate]);
-
   const [disabled, setDisabled] = useState(false);
 
+  useNoReturn();
   const sendAnswer = useCallback(() => {
     sendJsonMessage && sendJsonMessage({ date: Date.now() });
     setDisabled(true);
@@ -26,6 +20,13 @@ export const Main = () => {
       setDisabled(!parsedMessage.reset);
     }
   }, [parsedMessage]);
+
+  if (!isConnected) {
+    return <Navigate to={ERoutes.CONNECT} />;
+  }
+  if (isAdmin) {
+    return <Navigate to={ERoutes.ADMIN} />;
+  }
 
   return (
     <Button disabled={disabled} onClickButton={sendAnswer} className={styles.button}>

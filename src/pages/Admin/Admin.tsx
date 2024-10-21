@@ -1,7 +1,7 @@
 import styles from './styles.module.css';
 import { useEffect, useMemo, useState } from 'react';
-import { IResult, IUser, useIsDarkMode, useWebSocketContext } from '../../hooks';
-import { useNavigate } from 'react-router-dom';
+import { IResult, IUser, useIsDarkMode, useNoReturn, useWebSocketContext } from '../../hooks';
+import { Navigate } from 'react-router-dom';
 import { ERoutes } from '../../routes.ts';
 import { Button } from '../../components';
 import { Table } from '../../components/Table';
@@ -23,21 +23,16 @@ const resultColumns = [
 ];
 
 export const Admin = () => {
-  const navigate = useNavigate();
-  const { isConnected, isAdmin, parsedMessage, sendMessage } = useWebSocketContext();
+  const { isConnected, isAdmin, parsedMessage, sendJsonMessage } = useWebSocketContext();
   const [results, setResults] = useState([] as IResult[]);
   const [users, setUsers] = useState([] as IUser[]);
   const { theme } = useIsDarkMode();
-
-  useEffect(() => {
-    if (!isConnected) navigate(ERoutes.CONNECT);
-    else if (isConnected && !isAdmin) navigate(ERoutes.MAIN);
-  }, [isAdmin, isConnected, navigate]);
+  useNoReturn();
 
   const userRows = useMemo(() => {
     return users?.map((user, idx) => {
       const handleClose = () => {
-        sendMessage(JSON.stringify({ close: true, id: user.id }));
+        sendJsonMessage && sendJsonMessage({ close: true, id: user.id });
       };
 
       const closeIcon = (
@@ -50,7 +45,7 @@ export const Admin = () => {
       );
       return { ...user, number: idx + 1, close: closeIcon };
     });
-  }, [users, theme, sendMessage]);
+  }, [users, theme, sendJsonMessage]);
 
   const resultRows = useMemo(() => {
     return results.map((item, index) => {
@@ -80,9 +75,16 @@ export const Admin = () => {
   }, [parsedMessage]);
 
   const handleReset = () => {
-    sendMessage(JSON.stringify({ reset: true }));
+    sendJsonMessage && sendJsonMessage({ reset: true });
     setResults([]);
   };
+
+  if (!isConnected) {
+    return <Navigate to={ERoutes.CONNECT} />;
+  }
+  if (!isAdmin) {
+    return <Navigate to={ERoutes.MAIN} />;
+  }
 
   return (
     <div className={styles.wrapper}>
