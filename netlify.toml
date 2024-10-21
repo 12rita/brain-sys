@@ -1,0 +1,10 @@
+[[redirects]]
+    from = "/main"
+    to = "/pages/Main"
+    status = 200
+
+[[redirects]]
+from = "/host"
+to = "/pages/Admin"
+status = 200
+
