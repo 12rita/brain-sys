@@ -1,15 +1,16 @@
-import { Button, Input } from '../../components';
-import { useToaster, useWebSocketContext } from '../../hooks';
-import React, { useEffect, useState } from 'react';
+import { Button, Input, QrReader } from '../../components';
+import { useIsMobile, useToaster, useWebSocketContext } from '../../hooks';
+import React, { useEffect, useMemo, useState } from 'react';
 import styles from './styles.module.css';
 import { useNavigate } from 'react-router-dom';
 import { ReadyState } from 'react-use-websocket';
 import { ERoutes } from '../../routes.ts';
+import scanSVG from '../../assets/qrIcon.svg';
 
 export const Connect = () => {
   const navigate = useNavigate();
 
-  const { isConnected, sendJsonMessage, readyState, isAdmin, setOpenConnection } =
+  const { isConnected, sendJsonMessage, readyState, isAdmin, setOpenConnection, setURL } =
     useWebSocketContext();
 
   useEffect(() => {
@@ -18,9 +19,25 @@ export const Connect = () => {
   }, [isAdmin, isConnected, navigate]);
 
   const [name, setName] = useState('');
+  const [manual, setManual] = useState(false);
+  const [urlValue, setUrlValue] = useState('');
   const { setMessage } = useToaster();
+  const [isOpenQRScan, setOpenQRScan] = useState(false);
+  const { isMobile } = useIsMobile();
 
-  const disabled = !name || readyState === ReadyState.CONNECTING;
+  const scanButtonContent = isMobile ? (
+    <img width={30} height={30} alt={'scanIcon'} src={scanSVG} />
+  ) : (
+    'QR'
+  );
+
+  const manualButtonContent = manual ? 'Подключиться автоматически' : 'Ввести URL вручную';
+
+  const disabled = useMemo(() => {
+    const general = !name || readyState === ReadyState.CONNECTING;
+    if (manual) return !urlValue || general;
+    return general;
+  }, [manual, name, readyState, urlValue]);
 
   useEffect(() => {
     if (readyState === ReadyState.OPEN) {
@@ -34,11 +51,44 @@ export const Connect = () => {
 
   const connect = (e: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
     e.preventDefault();
-    setOpenConnection(true);
+    if (manual) setURL(urlValue);
+    else setOpenConnection(true);
+  };
+
+  const toggleScanner = () => {
+    setOpenQRScan((prevState) => !prevState);
+  };
+
+  const toggleManual = () => {
+    setManual(!manual);
   };
 
   return (
     <div>
+      <Button
+        className={`${styles.button} ${styles.manualLabel} ${styles.wideButton}`}
+        onClickButton={toggleManual}>
+        {manualButtonContent}
+      </Button>
+      {manual && (
+        <>
+          <div className={styles.label}>Введите URL</div>
+          <div className={styles.urlBlock}>
+            <Input
+              className={styles.input}
+              type="text"
+              inputMode={'numeric'}
+              value={urlValue}
+              onChangeInput={setUrlValue}
+              placeholder={'Введите URL'}
+            />
+            <Button className={styles.button} onClickButton={toggleScanner}>
+              {scanButtonContent}
+            </Button>
+          </div>
+        </>
+      )}
+      {isOpenQRScan && <QrReader setScannedResult={setUrlValue} onClose={toggleScanner} />}
       <div className={styles.label}>Введите имя</div>
       <Input
         className={styles.input}
@@ -48,7 +98,7 @@ export const Connect = () => {
       />
       <Button
         disabled={disabled}
-        className={`${styles.button} ${styles.connectButton}`}
+        className={`${styles.button} ${styles.connectButton} ${styles.wideButton}`}
         onClickButton={connect}>
         Подключиться
       </Button>

@@ -15,6 +15,7 @@ import { WebSocketHook } from 'react-use-websocket/dist/lib/types';
 interface IWebSocketContext extends Partial<WebSocketHook<unknown>> {
   isConnected: boolean;
   setOpenConnection: Dispatch<SetStateAction<boolean>>;
+  setURL: Dispatch<SetStateAction<string>>;
   readyState: ReadyState;
   isAdmin: boolean;
   parsedMessage: IServerResponse | null;
@@ -25,16 +26,17 @@ export const WebSocketContext = createContext({} as IWebSocketContext);
 export const WebSocketProvider = ({ children }: { children?: ReactNode }) => {
   const [openConnection, setOpenConnection] = useState(false);
   const [isAdmin, setIsAdmin] = useState(false);
+  const [url, setURL] = useState('');
 
   const { readyState, lastJsonMessage, ...otherProps } = useWebSocket(
-    WS_URL,
+    url ? url : WS_URL,
     {
       share: true,
       onClose: () => {
         setOpenConnection(false);
       }
     },
-    openConnection
+    openConnection || !!url
   );
 
   const isConnected = useMemo(() => readyState === ReadyState.OPEN, [readyState]);
@@ -52,6 +54,7 @@ export const WebSocketProvider = ({ children }: { children?: ReactNode }) => {
         readyState,
         isConnected,
         isAdmin,
+        setURL,
         parsedMessage: lastJsonMessage as IServerResponse,
         ...otherProps
       }}>

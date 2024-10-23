@@ -6,15 +6,25 @@
     margin-bottom: 8px;
 }
 
+.manualLabel {
+    cursor: pointer;
+}
+
 .button {
     min-height: 50px;
     margin: 16px 0;
     outline: none;
     border: none;
+    background-color: var(--bright);
+}
+
+.wideButton {
+    width: 100%;
 }
 
 .connectButton {
-    width: 100%;
+    background-color: var(--bright);
+
 }
 
 .input {
