@@ -1,6 +1,6 @@
 import styles from './styles.module.css';
 import { useCallback, useEffect, useState } from 'react';
-import { useNoReturn, useWebSocketContext } from '../../hooks';
+import { useNoReturn, useToaster, useWebSocketContext } from '../../hooks';
 import { Navigate } from 'react-router-dom';
 import { ERoutes } from '../../routes.ts';
 import { Button } from '../../components';
@@ -8,7 +8,7 @@ import { Button } from '../../components';
 export const Main = () => {
   const { isConnected, sendJsonMessage, isAdmin, parsedMessage } = useWebSocketContext();
   const [disabled, setDisabled] = useState(false);
-
+  const { setMessage } = useToaster();
   useNoReturn();
   const sendAnswer = useCallback(() => {
     sendJsonMessage && sendJsonMessage({ date: Date.now() });
@@ -17,9 +17,10 @@ export const Main = () => {
 
   useEffect(() => {
     if (parsedMessage && 'reset' in parsedMessage) {
+      setMessage({ title: 'success', text: JSON.stringify(parsedMessage) });
       setDisabled(!parsedMessage.reset);
     }
-  }, [parsedMessage]);
+  }, [parsedMessage, setMessage]);
 
   if (!isConnected) {
     return <Navigate to={ERoutes.CONNECT} />;
