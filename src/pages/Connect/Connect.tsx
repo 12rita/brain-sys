@@ -40,19 +40,26 @@ export const Connect = () => {
   }, [manual, name, readyState, urlValue]);
 
   useEffect(() => {
+    const previousName = sessionStorage.getItem('name');
+    if (previousName) {
+      setName(previousName);
+      setOpenConnection(true);
+    }
+  }, [setOpenConnection]);
+
+  useEffect(() => {
     if (readyState === ReadyState.OPEN) {
       sendJsonMessage && sendJsonMessage({ name });
       setMessage({ title: 'success' });
       navigate(ERoutes.MAIN);
     } else if (readyState === ReadyState.CLOSED && !disabled) {
-      setMessage({ title: 'error', text: 'Connecting problems' });
-      console.log(readyState);
       setOpenConnection(false);
     }
   }, [name, navigate, readyState, setMessage, disabled, sendJsonMessage, setOpenConnection]);
 
   const connect = (e: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
     e.preventDefault();
+    sessionStorage.setItem('name', name);
     if (manual) setURL(urlValue);
     setOpenConnection(true);
   };
