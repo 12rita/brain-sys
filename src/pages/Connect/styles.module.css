@@ -15,7 +15,11 @@
     margin: 16px 0;
     outline: none;
     border: none;
-    background-color: var(--bright);
+    /*background-color: var(--bright);*/
+}
+
+.manualButton {
+    background-color: var(--secondary);
 }
 
 .wideButton {
@@ -23,7 +27,7 @@
 }
 
 .connectButton {
-    background-color: var(--bright);
+    /*background-color: var(--bright);*/
 
 }
 

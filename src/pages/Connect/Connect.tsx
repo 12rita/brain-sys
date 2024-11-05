@@ -66,7 +66,7 @@ export const Connect = () => {
   return (
     <div>
       <Button
-        className={`${styles.button} ${styles.manualLabel} ${styles.wideButton}`}
+        className={`${styles.button} ${styles.manualButton} ${styles.manualLabel} ${styles.wideButton}`}
         onClickButton={toggleManual}>
         {manualButtonContent}
       </Button>
@@ -98,7 +98,7 @@ export const Connect = () => {
       />
       <Button
         disabled={disabled}
-        className={`${styles.button} ${styles.connectButton} ${styles.wideButton}`}
+        className={`${styles.button} ${styles.wideButton}`}
         onClickButton={connect}>
         Подключиться
       </Button>
