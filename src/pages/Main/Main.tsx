@@ -22,6 +22,7 @@ export const Main = () => {
 
   useEffect(() => {
     const handleSwipe = () => {
+      if (disabled) return;
       sendAnswer();
     };
     window.addEventListener('touchstart', handleSwipe);
@@ -29,7 +30,7 @@ export const Main = () => {
     return () => {
       window.removeEventListener('touchstart', handleSwipe);
     };
-  }, [sendAnswer]);
+  }, [disabled, sendAnswer]);
 
   useEffect(() => {
     if (parsedMessage && 'reset' in parsedMessage) {

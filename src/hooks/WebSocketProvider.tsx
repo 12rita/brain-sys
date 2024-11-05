@@ -38,13 +38,16 @@ export const WebSocketProvider = ({ children }: { children?: ReactNode }) => {
     {
       share: true,
       onClose: () => {
-        setMessage({ title: 'error', text: 'Connecting problems' });
+        if (readyState === ReadyState.CLOSED)
+          setMessage({ title: 'error', text: 'Connection was closed' });
+        else if (readyState === ReadyState.UNINSTANTIATED)
+          setMessage({ title: 'error', text: 'Connecting problems' });
         setOpenConnection(false);
       },
-      retryOnError: true,
-      shouldReconnect: () => {
-        return true;
-      }
+      retryOnError: true
+      // shouldReconnect: () => {
+      //   return true;
+      // }
     },
     openConnection
   );

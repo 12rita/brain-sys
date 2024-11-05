@@ -6,15 +6,15 @@ import { ERoutes } from './routes.ts';
 function App() {
   return (
     <>
-      <WebSocketProvider>
-        <ToasterProvider>
+      <ToasterProvider>
+        <WebSocketProvider>
           <Routes>
             <Route path={ERoutes.CONNECT} element={<Connect />} />
             <Route path={ERoutes.MAIN} element={<Main />} />
             <Route path={ERoutes.ADMIN} element={<Admin />} />
           </Routes>
-        </ToasterProvider>
-      </WebSocketProvider>
+        </WebSocketProvider>
+      </ToasterProvider>
     </>
   );
 }
