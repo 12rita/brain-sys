@@ -1,1 +1,1 @@
-export const WS_URL = `wss://brain-system.ru.tuna.am`;
+export const WS_URL = `wss://brainsystem.kabeworldwide.site/wss`;

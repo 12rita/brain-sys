@@ -34,9 +34,13 @@ export const WebSocketProvider = ({ children }: { children?: ReactNode }) => {
       share: true,
       onClose: () => {
         setOpenConnection(false);
+      },
+      retryOnError: true,
+      shouldReconnect: () => {
+        return true;
       }
     },
-    openConnection || !!url
+    openConnection
   );
 
   const isConnected = useMemo(() => readyState === ReadyState.OPEN, [readyState]);
