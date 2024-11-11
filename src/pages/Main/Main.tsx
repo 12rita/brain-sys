@@ -21,18 +21,6 @@ export const Main = () => {
   }, [sendJsonMessage]);
 
   useEffect(() => {
-    const handleSwipe = () => {
-      if (disabled) return;
-      sendAnswer();
-    };
-    window.addEventListener('touchstart', handleSwipe);
-
-    return () => {
-      window.removeEventListener('touchstart', handleSwipe);
-    };
-  }, [disabled, sendAnswer]);
-
-  useEffect(() => {
     if (parsedMessage && 'reset' in parsedMessage) {
       setMessage({ title: 'success', text: JSON.stringify(parsedMessage) });
       setDisabled(!parsedMessage.reset);
@@ -47,7 +35,11 @@ export const Main = () => {
   }
 
   return (
-    <Button disabled={disabled} onClickButton={sendAnswer} className={styles.button}>
+    <Button
+      disabled={disabled}
+      onClickButton={sendAnswer}
+      onTouchStart={sendAnswer}
+      className={styles.button}>
       {'Я знаю ответ!'}
     </Button>
   );
